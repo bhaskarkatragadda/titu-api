@@ -14,21 +14,21 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.post('/add', verifyAccessToken, async (req, res, next) => {
+router.post('/', verifyAccessToken, async (req, res, next) => {
   try {
     const task = new Task({
       title: req.body.title,
       description: req.body.description,
       userId: req.user.userId,
     });
-    await task.save();
-    res.status(201).json({ message: 'Created', data: task });
+    const savedTask = await task.save();
+    res.status(201).json({ message: 'Created', id: savedTask._id });
   } catch (error) {
     next(error);
   }
 });
 
-router.delete('/delete', verifyAccessToken, async (req, res, next) => {
+router.post('/delete', verifyAccessToken, async (req, res, next) => {
   try {
     const task = await Task.deleteOne({ _id: req.body.id });
     res.status(200).json({ message: 'Deleted', data: task });
